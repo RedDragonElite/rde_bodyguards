@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>RDE | BODYGUARD SYSTEM</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Barlow+Condensed:wght@400;500;600;700;800&display=swap');
+
+    :root {
+      --red:     #e8001e;
+      --red-a:   rgba(232,0,30,0.6);
+      --red-bg:  rgba(232,0,30,0.10);
+      --panel:   rgba(5,5,8,0.82);
+      --panel-h: rgba(10,10,16,0.90);
+      --line:    rgba(255,255,255,0.06);
+      --text:    #d8dce8;
+      --dim:     #525666;
+      --mono:    'Share Tech Mono', monospace;
+      --cond:    'Barlow Condensed', sans-serif;
+    }
+
+    * { margin:0; padding:0; box-sizing:border-box; }
+
+    html, body {
+      width:1920px; height:1080px;
+      background:transparent; overflow:hidden;
+      -webkit-font-smoothing:antialiased;
+      text-rendering:geometricPrecision;
+    }
+
+    /* ───── KEYFRAMES ───── */
+    @keyframes slide-down {
+      from { opacity:0; transform:translateX(10px) }
+      to   { opacity:1; transform:translateX(0) }
+    }
+    @keyframes fill-bar { from { width:0 } }
+    @keyframes throb {
+      0%,100%{ opacity:1 } 50%{ opacity:0.55 }
+    }
+    @keyframes combat-pulse {
+      0%,100%{ box-shadow: inset 2px 0 0 #ef4444 }
+      50%    { box-shadow: inset 2px 0 0 #ef444488, 0 0 8px #ef444430 }
+    }
+
+    /* ───── PANEL ───── */
+    #panel {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 3px;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+    #panel.visible {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    /* ───── LABEL ROW (top) ───── */
+    .label-row {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding-right: 2px;
+      margin-bottom: 1px;
+    }
+    .label-txt {
+      font-family: var(--mono);
+      font-size: 9px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--dim);
+    }
+    .label-cnt {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--red);
+      background: var(--red-bg);
+      border: 1px solid var(--red-a);
+      padding: 0px 5px 1px;
+      letter-spacing: 1px;
+      line-height: 1.5;
+    }
+    .label-dot {
+      width: 5px; height: 5px;
+      background: var(--red);
+      border-radius: 50%;
+      animation: throb 2s ease-in-out infinite;
+    }
+
+    /* ───── CARD ───── */
+    .card {
+      width: 260px;
+      background: var(--panel);
+      border: 1px solid rgba(255,255,255,0.07);
+      /* left accent = rarity color */
+      box-shadow: inset 3px 0 0 var(--rc, var(--red));
+      cursor: pointer;
+      animation: slide-down 0.18s ease-out backwards;
+      transition: background 0.12s;
+      position: relative;
+    }
+    .card:nth-child(1){ animation-delay:0.00s }
+    .card:nth-child(2){ animation-delay:0.04s }
+    .card:nth-child(3){ animation-delay:0.08s }
+    .card:nth-child(4){ animation-delay:0.12s }
+    .card:nth-child(5){ animation-delay:0.16s }
+
+    .card:hover { background: var(--panel-h); }
+
+    .card.state-combat {
+      animation: slide-down 0.18s ease-out backwards, combat-pulse 0.9s ease-in-out infinite;
+    }
+
+    /* ── top section ── */
+    .ct {
+      display: flex;
+      align-items: center;
+      gap: 0;
+      padding: 5px 7px 4px 10px;
+      border-bottom: 1px solid var(--line);
+    }
+    .cinfo { flex:1; min-width:0; }
+
+    .cname {
+      font-family: var(--cond);
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      color: var(--text);
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      line-height: 1.1;
+    }
+    .cmeta {
+      font-family: var(--mono);
+      font-size: 8.5px;
+      color: var(--dim);
+      margin-top: 1.5px;
+      line-height: 1;
+    }
+    .cmeta .hl { color: var(--rc, var(--red)); }
+
+    /* state badge */
+    .cbadge {
+      font-family: var(--mono);
+      font-size: 8.5px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border: 1px solid;
+      flex-shrink: 0;
+      line-height: 1.2;
+      white-space: nowrap;
+    }
+    .cbadge.follow   { color:#60a5fa; border-color:#60a5fa50; background:#60a5fa0e; }
+    .cbadge.guard    { color:#f59e0b; border-color:#f59e0b50; background:#f59e0b0e; }
+    .cbadge.patrol   { color:#22d3ee; border-color:#22d3ee50; background:#22d3ee0e; }
+    .cbadge.combat   { color:#ef4444; border-color:#ef4444;   background:#ef44441a; animation:throb 0.7s infinite; }
+    .cbadge.avenge   { color:#a855f7; border-color:#a855f7;   background:#a855f71a; animation:throb 1s infinite; }
+    .cbadge.arriving { color:#34d399; border-color:#34d39950; background:#34d3990e; }
+
+    /* ── bars ── */
+    .bars {
+      padding: 4px 7px 3px 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .brow {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .blbl {
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: 0.5px;
+      color: var(--dim);
+      width: 14px;
+      flex-shrink: 0;
+      text-transform: uppercase;
+    }
+    .btrack {
+      flex: 1;
+      height: 5px;
+      background: rgba(255,255,255,0.07);
+      overflow: hidden;
+      position: relative;
+    }
+    /* subtle segment marks */
+    .btrack::after {
+      content:'';
+      position:absolute; inset:0;
+      background: repeating-linear-gradient(
+        90deg, transparent, transparent 24%, rgba(5,5,8,0.5) 24%, rgba(5,5,8,0.5) 25%
+      );
+      pointer-events:none;
+    }
+    .bfill {
+      height:100%;
+      animation: fill-bar 0.35s ease-out;
+    }
+    .bval {
+      font-family: var(--mono);
+      font-size: 9px;
+      color: var(--dim);
+      width: 22px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+
+    /* hp colors */
+    .h3 { background:#22c55e; box-shadow:0 0 4px #22c55e60; }
+    .h2 { background:#eab308; box-shadow:0 0 4px #eab30860; }
+    .h1 { background:#e8001e; box-shadow:0 0 5px #e8001e80; animation:throb 0.75s infinite; }
+    /* morale colors */
+    .m3 { background:#818cf8; }
+    .m2 { background:#eab308; }
+    .m1 { background:#f97316; }
+
+    /* ── chips ── */
+    .chips {
+      display:flex; gap:2px; flex-wrap:wrap;
+      padding: 0 7px 5px 10px;
+    }
+    .chip {
+      font-family: var(--mono);
+      font-size: 8px;
+      letter-spacing: 0.5px;
+      text-transform: uppercase;
+      padding: 1px 4px 1px;
+      border: 1px solid;
+      line-height: 1.35;
+      white-space: nowrap;
+    }
+    .ch-wm { color:#fbbf24; border-color:#fbbf2445; background:#fbbf240d; }
+    .ch-ws { color:#f97316; border-color:#f9731645; background:#f973160d; }
+    .ch-wc { color:#ef4444; border-color:#ef4444;   background:#ef44440d; animation:throb 0.8s infinite; }
+    .ch-ms { color:#f59e0b; border-color:#f59e0b45; background:#f59e0b0d; }
+    .ch-mb { color:#ef4444; border-color:#ef444445; background:#ef44440d; }
+    .ch-r  { border-color:currentColor; background:transparent; opacity:0.75; }
+    .ch-adr { color:#f472b6; border-color:#f472b6; background:#f472b61a; animation:throb 0.6s infinite; }
+    .ch-heal { color:#34d399; border-color:#34d39950; background:#34d3990d; }
+    .ch-ls { color:#ff6b35; border-color:#ff6b35; background:#ff6b351a; animation:throb 0.5s infinite; }
+  </style>
+</head>
+<body>
+<div id="panel">
+  <div class="label-row">
+    <span class="label-txt">Bodyguards</span>
+    <span class="label-cnt" id="cnt">0</span>
+    <span class="label-dot"></span>
+  </div>
+  <div id="cards"></div>
+</div>
+
+<script>
+  const _oe = window.onerror;
+  window.onerror = (m,s,l,c,e) => {
+    if (typeof m==='string' && m.includes('ResizeObserver')) return true;
+    return _oe ? _oe(m,s,l,c,e) : false;
+  };
+
+  const panel = document.getElementById('panel');
+  const cardsEl = document.getElementById('cards');
+  const cntEl   = document.getElementById('cnt');
+
+  const BADGE_ICON = {
+    follow:'&#x25B8;', guard:'&#x25A0;', patrol:'&#x25CB;',
+    combat:'&#x2715;', avenge:'&#x2716;', arriving:'&#x25B6;'
+  };
+
+  function hpc(p) { return p>.55?'h3':p>.28?'h2':'h1'; }
+  function moc(m) { return m>=50?'m3':m>=25?'m2':'m1'; }
+
+  function mkCard(bg) {
+    const hp  = Math.max(0,Math.min(1,bg.hpPct));
+    const mor = Math.max(0,Math.min(100,bg.morale));
+    const hpPct = Math.round(hp*100);
+    const hpCol = hp>.55?'#22c55e':hp>.28?'#eab308':'#e8001e';
+    const moCol = mor>=50?'#818cf8':mor>=25?'#eab308':'#f97316';
+
+    let chips = '';
+    if (bg.wound && bg.wound!=='none') {
+      const wc = bg.wound==='critical'?'ch-wc':bg.wound==='serious'?'ch-ws':'ch-wm';
+      chips += `<span class="chip ${wc}">${bg.woundLabel}</span>`;
+    }
+    if (mor < 25)      chips += `<span class="chip ch-mb">${bg.moraleLabel}</span>`;
+    else if (mor < 50) chips += `<span class="chip ch-ms">${bg.moraleLabel}</span>`;
+    chips += `<span class="chip ch-r" style="color:${bg.relColor}">${bg.relTier}</span>`;
+    if (bg.adrenaline) chips += `<span class="chip ch-adr">ADRENALINE</span>`;
+    if (bg.lastStand)  chips += `<span class="chip ch-ls">LAST STAND</span>`;
+
+    const prestige = bg.prestige > 0 ? ` &middot; P<span class="hl">${bg.prestige}</span>` : '';
+    const glyph = bg.gender==='female' ? '&#9792;' : '&#9794;';
+
+    return `
+    <div class="card${bg.state==='combat'?' state-combat':''}" style="--rc:${bg.rarityColor}" onclick="cc(${bg.id})">
+      <div class="ct">
+        <div class="cinfo">
+          <div class="cname">${bg.name}</div>
+          <div class="cmeta">
+            LV<span class="hl">${bg.level}</span>${prestige}
+            &nbsp;<span class="hl">${bg.rarityLabel}</span>
+            &nbsp;${glyph}
+          </div>
+        </div>
+        <span class="cbadge ${bg.state}">${BADGE_ICON[bg.state]||''} ${bg.state.toUpperCase()}</span>
+      </div>
+      <div class="bars">
+        <div class="brow">
+          <span class="blbl" style="color:${hpCol}">HP</span>
+          <div class="btrack"><div class="bfill ${hpc(hp)}" style="width:${hpPct}%"></div></div>
+          <span class="bval">${hpPct}%</span>
+        </div>
+        <div class="brow">
+          <span class="blbl" style="color:${moCol}">MOR</span>
+          <div class="btrack"><div class="bfill ${moc(mor)}" style="width:${mor}%"></div></div>
+          <span class="bval">${mor}</span>
+        </div>
+      </div>
+      ${chips?`<div class="chips">${chips}</div>`:''}
+    </div>`;
+  }
+
+  function cc(id) {
+    fetch(`https://${GetParentResourceName()}/bgCardClick`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({bgId:id})
+    });
+  }
+
+  window.addEventListener('message', e => {
+    let d = e.data;
+    if (typeof d==='string') { try { d=JSON.parse(d); } catch { return; } }
+    if (!d || d.type!=='rde_hud_update') return;
+
+    const show = d.visible && d.bgs && d.bgs.length > 0;
+    panel.classList.toggle('visible', show);
+    cntEl.textContent = d.bgs?.length || 0;
+
+    if (show) {
+      let html = '';
+      for (let i = 0; i < Math.min(d.bgs.length, 5); i++) html += mkCard(d.bgs[i]);
+      requestAnimationFrame(() => { cardsEl.innerHTML = html; });
+    }
+  });
+
+  function GetParentResourceName() {
+    return window.GetParentResourceName ? window.GetParentResourceName() : 'rde_bodyguards';
+  }
+</script>
+</body>
+</html>
