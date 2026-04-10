@@ -322,18 +322,6 @@ Resource: rde_bodyguards
 
 ---
 
-## 🛣️ Roadmap
-
-### Planned Features
-- [ ] **Formation Wheel** — Visual formation selector
-- [ ] **BG Skins** — Custom clothing via illenium-appearance
-- [ ] **Voice Commands** — Control BGs with voice chat
-- [ ] **Squad Tactics** — Coordinated multi-BG maneuvers
-- [ ] **BG Housing** — Barracks where dismissed BGs wait
-- [ ] **Phone Integration** — Call/text BGs via in-game phone
-
----
-
 ## 🤝 Contributing
 
 1. Fork repository
