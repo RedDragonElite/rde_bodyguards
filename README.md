@@ -1,6 +1,6 @@
 # 🛡️ RDE | Bodyguards | Next-Gen AI Protection System
 
-[![License: RDE Black Flag](https://img.shields.io/badge/License-RDE%20Black%20Flag%20v6.66-red.svg)](LICENSE)
+[![License: RDE Black Flag](https://img.shields.io/badge/License-RDE%20Black%20Flag%20v6.66-black.svg)](LICENSE)
 [![FiveM](https://img.shields.io/badge/FiveM-Ready-blue.svg)](https://fivem.net/)
 [![ox_core](https://img.shields.io/badge/Framework-ox__core-green.svg)](https://github.com/overextended/ox_core)
 [![Version](https://img.shields.io/badge/Version-2.0.0-orange.svg)](#)
