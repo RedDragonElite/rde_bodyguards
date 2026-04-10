@@ -3,7 +3,7 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![FiveM](https://img.shields.io/badge/FiveM-Ready-blue.svg)](https://fivem.net/)
 [![ox_core](https://img.shields.io/badge/Framework-ox__core-green.svg)](https://github.com/overextended/ox_core)
-[![Version](https://img.shields.io/badge/Version-5.2.0-orange.svg)](#)
+[![Version](https://img.shields.io/badge/Version-2.0.0-orange.svg)](#)
 [![Stars](https://img.shields.io/github/stars/RedDragonElite/rde_bodyguards?style=social)](#)
 
 **The most advanced AI bodyguard system ever built for FiveM — self-healing NPCs, full weapon management, tactical combat AI, adrenaline rushes, and cinematic immersion**
