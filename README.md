@@ -287,7 +287,7 @@ Config.Pricing = {
 
 ### AnimDict Errors?
 ```
-✅ v5.2 wraps all anim loading in pcall — errors are non-fatal
+✅ v2 wraps all anim loading in pcall — errors are non-fatal
 ✅ If you see errors, the anim simply won't play but nothing crashes
 ```
 
